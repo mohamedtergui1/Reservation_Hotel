@@ -11,7 +11,6 @@ public class Main {
         do {
             System.out.println("1 : mange rooms ");
             System.out.println("2 : mange reservations");
-
             System.out.print("Enter a number (0 to exit): ");
             n = scanner.nextInt();
             switch (n)

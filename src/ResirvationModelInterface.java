@@ -6,4 +6,5 @@ public interface ResirvationModelInterface {
     public boolean update(Resirvation resirvation);
     public Resirvation get(int id);
     public ArrayList<Resirvation> getAll();
+    public int lastId();
 }

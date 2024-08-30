@@ -44,14 +44,25 @@ public class ResirvationController {
     {
         Resirvation resirvation = new Resirvation();
         Room room = new Room();
-        System.out.print("Enter the starting date: ");
-        resirvation.setStartDate(scanner.nextLine());
-        System.out.print("Enter the ending date: ");
-        resirvation.setEndDate(scanner.nextLine());
+        resirvation.setId(this.model.lastId() + 1);
+        System.out.print("Enter the starting date: (yyyy-MM-dd) ");
+
+        while (resirvation.getStartDate() == null) {
+            resirvation.setStartDate(scanner.nextLine());
+        }
+        System.out.print("Enter the ending date: (yyyy-MM-dd) ");
+
+        while (resirvation.getEndDate() == null) {
+            resirvation.setEndDate(scanner.nextLine());
+        }
         System.out.print("Enter the room id: ");
-        room.setId(scanner.nextInt());
-        room.getByRoomId();
-        resirvation.setRoom(room);
+
+        while (resirvation.getRoom() == null) {
+            room.setId(scanner.nextInt());
+            room.getByRoomId();
+            resirvation.setRoom(room);
+        }
+
 
         if(model.insert(resirvation))
             System.out.println("Resirvation added");
@@ -66,7 +77,20 @@ public class ResirvationController {
         index();
     }
 
-    public void printResirvation(Resirvation resirvation)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void printResirvation(Resirvation resirvation)
     {
         System.out.println("resirvation id :" +  resirvation.getId());
         System.out.println("resirvation startdate : " + resirvation.getStartDate() );
