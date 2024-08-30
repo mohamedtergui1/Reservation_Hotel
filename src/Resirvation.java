@@ -12,7 +12,6 @@ public class Resirvation {
     static String tempFile = "./tmp.txt";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-
     public int getId() {
         return id;
     }
@@ -47,30 +46,37 @@ public class Resirvation {
             return;
         }
 
-
         if (this.startDate != null && !isDateAfter(this.startDate, endDate)) {
             System.err.print("End date must be after the start date TRY again :");
             return;
         }
 
         this.endDate = endDate;
+
     }
 
     public void setRoom(Room room) {
+
         if (room == null) {
             System.err.print(" selected room not found  TRY again :");
             return;
         }
+
         this.room = room;
     }
 
     private boolean isValidDate(String date) {
+
         try {
+
             DATE_FORMAT.setLenient(false);
             DATE_FORMAT.parse(date);
             return true;
+
         } catch (ParseException e) {
+
             return false;
+
         }
     }
 
@@ -83,6 +89,8 @@ public class Resirvation {
             return false;
         }
     }
+
+
 
 
 }
