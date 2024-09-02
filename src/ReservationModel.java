@@ -2,14 +2,14 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 
-public class ResirvationModel implements ResirvationModelInterface {
-    public boolean insert(Resirvation resirvation) {
-        String data = Integer.toString(resirvation.getId()) + System.lineSeparator() +
-                resirvation.getStartDate() + System.lineSeparator() +
-                resirvation.getEndDate() + System.lineSeparator() +
-                Integer.toString(resirvation.getRoom().getId()) + System.lineSeparator();
+public class ReservationModel implements ReservationModelInterface {
+    public boolean insert(Reservation reservation) {
+        String data = Integer.toString(reservation.getId()) + System.lineSeparator() +
+                reservation.getStartDate() + System.lineSeparator() +
+                reservation.getEndDate() + System.lineSeparator() +
+                Integer.toString(reservation.getRoom().getId()) + System.lineSeparator();
         try {
-            Files.write(Paths.get(Resirvation.fileName), data.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            Files.write(Paths.get(Reservation.fileName), data.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
             return true;
         } catch (IOException e) {
             System.out.println("Something went wrong: " + e.getMessage());
@@ -17,13 +17,13 @@ public class ResirvationModel implements ResirvationModelInterface {
         return false;
     }
 
-    public boolean delete(Resirvation resirvation) {
+    public boolean delete(Reservation reservation) {
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(Resirvation.fileName));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(Resirvation.tempFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(Reservation.fileName));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(Reservation.tempFile))) {
 
             String line;
-            Resirvation resi = new Resirvation();
+            Reservation resi = new Reservation();
             Room room = new Room();
 
             while ((line = reader.readLine()) != null) {
@@ -36,7 +36,7 @@ public class ResirvationModel implements ResirvationModelInterface {
                 room.getByRoomId();
                 resi.setRoom(room);
 
-                if (resi.getId() != resirvation.getId()) {
+                if (resi.getId() != reservation.getId()) {
                     writer.write(Integer.toString(resi.getId()));
                     writer.newLine();
                     writer.write(resi.getStartDate());
@@ -56,13 +56,13 @@ public class ResirvationModel implements ResirvationModelInterface {
 
     }
 
-    public boolean update(Resirvation resirvation) {
+    public boolean update(Reservation reservation) {
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(Resirvation.fileName));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(Resirvation.tempFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(Reservation.fileName));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(Reservation.tempFile))) {
 
             String line;
-            Resirvation resi = new Resirvation();
+            Reservation resi = new Reservation();
             Room room = new Room() ;
             while ((line = reader.readLine()) != null) {
 
@@ -76,7 +76,7 @@ public class ResirvationModel implements ResirvationModelInterface {
                 writer.write(Integer.toString(resi.getId()));
                 writer.newLine();
 
-                if (resi.getId() != resirvation.getId()) {
+                if (resi.getId() != reservation.getId()) {
 
                     writer.write(resi.getStartDate());
                     writer.newLine();
@@ -87,11 +87,11 @@ public class ResirvationModel implements ResirvationModelInterface {
 
                 } else {
 
-                    writer.write(resirvation.getStartDate());
+                    writer.write(reservation.getStartDate());
                     writer.newLine();
-                    writer.write(resirvation.getEndDate());
+                    writer.write(reservation.getEndDate());
                     writer.newLine();
-                    writer.write(Integer.toString(resirvation.getRoom().getId()));
+                    writer.write(Integer.toString(reservation.getRoom().getId()));
                     writer.newLine();
 
                 }
@@ -105,22 +105,22 @@ public class ResirvationModel implements ResirvationModelInterface {
         return removeOldfileandRenameNewFile();
     }
 
-    public Resirvation get(int id) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(Resirvation.fileName))) {
+    public Reservation get(int id) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(Reservation.fileName))) {
             String line;
-            Resirvation resirvation = new Resirvation();
+            Reservation reservation = new Reservation();
             Room room = new Room();
             while ((line = reader.readLine()) != null) {
-                resirvation.setId(Integer.parseInt(line));
-                resirvation.setStartDate(reader.readLine());
-                resirvation.setEndDate(reader.readLine());
+                reservation.setId(Integer.parseInt(line));
+                reservation.setStartDate(reader.readLine());
+                reservation.setEndDate(reader.readLine());
 
                 room.setId(Integer.parseInt(reader.readLine()));
                 room.getByRoomId();
-                resirvation.setRoom(room);
-                if (resirvation.getId() == id)
+                reservation.setRoom(room);
+                if (reservation.getId() == id)
                 {
-                    return resirvation;
+                    return reservation;
                 }
             }
         } catch (IOException e) {
@@ -129,35 +129,35 @@ public class ResirvationModel implements ResirvationModelInterface {
         return null;
     }
 
-    public ArrayList<Resirvation> getAll() {
-        ArrayList<Resirvation> resirvations = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(Resirvation.fileName))) {
+    public ArrayList<Reservation> getAll() {
+        ArrayList<Reservation> reservations = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(Reservation.fileName))) {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                Resirvation resirvation = new Resirvation();
+                Reservation reservation = new Reservation();
                 Room room = new Room();
-                resirvation.setId(Integer.parseInt(line));
-                resirvation.setStartDate(reader.readLine());
-                resirvation.setEndDate(reader.readLine());
+                reservation.setId(Integer.parseInt(line));
+                reservation.setStartDate(reader.readLine());
+                reservation.setEndDate(reader.readLine());
 
                 room.setId(Integer.parseInt(reader.readLine()));
                 room.getByRoomId();
-                resirvation.setRoom(room);
-                resirvations.add(resirvation);
+                reservation.setRoom(room);
+                reservations.add(reservation);
             }
         } catch (IOException e) {
             System.out.println("Could not find or read the Reservation file.");
         }
-        return resirvations;
+        return reservations;
     }
 
     private boolean removeOldfileandRenameNewFile()
     {
         try {
             // Rename the temporary file to replace the original file
-            Path originalPath = Paths.get(Resirvation.fileName);
-            Path tempFilePath = Paths.get(Resirvation.tempFile);
+            Path originalPath = Paths.get(Reservation.fileName);
+            Path tempFilePath = Paths.get(Reservation.tempFile);
 
             Files.deleteIfExists(originalPath);
             Files.move(tempFilePath, originalPath, StandardCopyOption.REPLACE_EXISTING);
@@ -173,7 +173,7 @@ public class ResirvationModel implements ResirvationModelInterface {
     {
         int idlast = 1;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(Resirvation.fileName))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(Reservation.fileName))) {
               String line;
             while ((line = reader.readLine()) != null) {
 

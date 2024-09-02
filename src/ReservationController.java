@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-public class ResirvationController {
-    ResirvationModelInterface model;
+public class ReservationController {
+    ReservationModelInterface model;
     Scanner scanner = new Scanner(System.in);
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    public ResirvationController( ResirvationModelInterface model ) {
+    public ReservationController(ReservationModelInterface model ) {
         this.model = model;
     }
 
     public void index()
     {
-        ArrayList<Resirvation> resirvations = this.model.getAll();
+        ArrayList<Reservation> reservations = this.model.getAll();
         System.out.println("-----------------------------------------------------------------------------");
-        for (Resirvation resirvation : resirvations) {
-            printResirvation(resirvation);
+        for (Reservation reservation : reservations) {
+            printResirvation(reservation);
             System.out.println("------------------------------------------------------------------------------");
         }
         System.out.println("1: Add Resirvation");
@@ -48,28 +48,30 @@ public class ResirvationController {
 
     public void create()
     {
-        Resirvation resirvation = new Resirvation();
+        Reservation reservation = new Reservation();
         Room room = new Room();
-        resirvation.setId(this.model.lastId() + 1);
+        reservation.setId(this.model.lastId() + 1);
 
         System.out.print("Enter the starting date: (yyyy-MM-dd) ");
-        while (resirvation.getStartDate() == null) {
-            resirvation.setStartDate(scanner.nextLine());
+        while (reservation.getStartDate() == null) {
+            reservation.setStartDate(scanner.nextLine());
         }
 
         System.out.print("Enter the ending date: (yyyy-MM-dd) ");
-        while (resirvation.getEndDate() == null) {
-            resirvation.setEndDate(scanner.nextLine());
+        while (reservation.getEndDate() == null) {
+            reservation.setEndDate(scanner.nextLine());
         }
-
+        Room.printAllRooms();
         System.out.print("Enter the room id: ");
-        while (resirvation.getRoom() == null) {
-            room.setId(scanner.nextInt());
-            resirvation.setRoom(room.getByRoomId() ? room : null);
+        while (reservation.getRoom() == null) {
+            room.setId(this.scanner.nextInt());
+            this.scanner.nextLine();
+
+            reservation.setRoom(room.getByRoomId() ? room : null);
         }
         while (true) {
-            if (!validateResirvation(resirvation,-1)) {
-                if (model.insert(resirvation))
+            if (!validateResirvation(reservation,-1)) {
+                if (model.insert(reservation))
                     System.out.println("Reservation added");
                 else {
                     System.out.println("Reservation doesn't added");
@@ -78,9 +80,10 @@ public class ResirvationController {
             } else {
                 System.out.println("The room not available in this time choose another another room");
                 System.out.print("Enter the room id: ");
-                while (resirvation.getRoom() == null) {
+                while (reservation.getRoom() == null) {
                     room.setId(scanner.nextInt());
-                    resirvation.setRoom(room.getByRoomId() ? room : null);
+                    this.scanner.nextLine();
+                    reservation.setRoom(room.getByRoomId() ? room : null);
                 }
             }
         }
@@ -96,7 +99,7 @@ public class ResirvationController {
     {
         System.out.print("Enter the id of the resirvation: ");
         int id = scanner.nextInt();
-        Resirvation res = this.model.get(id);
+        Reservation res = this.model.get(id);
         if(res != null)
         {
             System.out.println("the selected resirvation: ");
@@ -104,31 +107,31 @@ public class ResirvationController {
                 printResirvation(res);
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Room room = new Room();
-            Resirvation resirvation = new Resirvation();
-            resirvation.setId(res.getId());
+            Reservation reservation = new Reservation();
+            reservation.setId(res.getId());
 
             System.out.print("Enter the new starting date: (yyyy-MM-dd) ");
-            while (resirvation.getStartDate() == null) {
-                resirvation.setStartDate(scanner.nextLine());
+            while (reservation.getStartDate() == null) {
+                reservation.setStartDate(scanner.nextLine());
             }
 
             System.out.print("Enter the new ending date: (yyyy-MM-dd) ");
-            while (resirvation.getEndDate() == null) {
-                resirvation.setEndDate(scanner.nextLine());
+            while (reservation.getEndDate() == null) {
+                reservation.setEndDate(scanner.nextLine());
             }
-
+            Room.printAllRooms();
             System.out.print("Enter the new room id: ");
-            while (resirvation.getRoom() == null) {
+            while (reservation.getRoom() == null) {
                 room.setId(scanner.nextInt());
                 this.scanner.nextLine();
-                resirvation.setRoom(room.getByRoomId() ? room : null);
+                reservation.setRoom(room.getByRoomId() ? room : null);
             }
 
             System.out.print("you want to save the changes (y/n) : ");
             if (scanner.nextLine().equalsIgnoreCase("y")) {
                 while (true) {
-                    if (!validateResirvation(resirvation, resirvation.getId())) {
-                        if (model.update(resirvation))
+                    if (!validateResirvation(reservation, reservation.getId())) {
+                        if (model.update(reservation))
                             System.out.println("Reservation Updated");
                         else {
                             System.out.println("Reservation doesn't Updated");
@@ -137,10 +140,10 @@ public class ResirvationController {
                     } else {
                         System.out.println("The room not available in this time choose another another room");
                         System.out.print("Enter the new room id: ");
-                        while (resirvation.getRoom() == null) {
+                        while (reservation.getRoom() == null) {
                             room.setId(this.scanner.nextInt());
                             this.scanner.nextLine();
-                            resirvation.setRoom(room.getByRoomId() ? room : null);
+                            reservation.setRoom(room.getByRoomId() ? room : null);
                         }
                     }
                 }
@@ -158,9 +161,9 @@ public class ResirvationController {
     public void delete()
     {
         System.out.print("Enter the id of the resirvation: ");
-        Resirvation resirvation = this.model.get(this.scanner.nextInt());
+        Reservation reservation = this.model.get(this.scanner.nextInt());
         this.scanner.nextLine();
-        if(resirvation == null)
+        if(reservation == null)
         {
             System.err.println("Resirvation doesn't exist");
             return;
@@ -169,7 +172,7 @@ public class ResirvationController {
         String confirmation = this.scanner.nextLine();
 
         if (confirmation.equalsIgnoreCase("y")) {
-            if (this.model.delete(resirvation)) {
+            if (this.model.delete(reservation)) {
                 System.out.println("Reservation deleted.");
             } else {
                 System.err.println("Failed to delete reservation.");
@@ -182,27 +185,27 @@ public class ResirvationController {
         index();
     }
 
-    private void printResirvation(Resirvation resirvation)
+    private void printResirvation(Reservation reservation)
     {
-        System.out.println("resirvation id :" +  resirvation.getId());
-        System.out.println("resirvation startdate : " + resirvation.getStartDate() );
-        System.out.println("resirvation enddate : " + resirvation.getEndDate() );
+        System.out.println("resirvation id :" +  reservation.getId());
+        System.out.println("resirvation startdate : " + reservation.getStartDate() );
+        System.out.println("resirvation enddate : " + reservation.getEndDate() );
         System.out.println("resirvation room information: " );
-        System.out.println("=>               room id : " + resirvation.getRoom().getId());
-        System.out.println("=>               room : " + resirvation.getRoom().getRoomName());
-        System.out.println("=>               room capacity : " + resirvation.getRoom().getRoomCapacity());
-        System.out.println("=>               room price : " + resirvation.getRoom().getRoomPrice());
+        System.out.println("=>               room id : " + reservation.getRoom().getId());
+        System.out.println("=>               room : " + reservation.getRoom().getRoomName());
+        System.out.println("=>               room capacity : " + reservation.getRoom().getRoomCapacity());
+        System.out.println("=>               room price : " + reservation.getRoom().getRoomPrice());
     }
 
-    private boolean validateResirvation(Resirvation resirvation, int id)
+    private boolean validateResirvation(Reservation reservation, int id)
     {
-        ArrayList<Resirvation> resirvations = this.model.getAll();
-        for (Resirvation resirv : resirvations) {
-            if (resirv.getRoom().getId() == resirvation.getRoom().getId() && id != resirv.getId()) {
+        ArrayList<Reservation> reservations = this.model.getAll();
+        for (Reservation resirv : reservations) {
+            if (resirv.getRoom().getId() == reservation.getRoom().getId() && id != resirv.getId()) {
                 if (
-                        this.isDateInRange(resirvation.getStartDate(), resirv.getEndDate(), resirv.getEndDate())
+                        this.isDateInRange(reservation.getStartDate(), resirv.getEndDate(), resirv.getEndDate())
                                 ||
-                                this.isDateInRange(resirvation.getEndDate(), resirv.getEndDate(), resirv.getEndDate())
+                                this.isDateInRange(reservation.getEndDate(), resirv.getEndDate(), resirv.getEndDate())
                 )
                 {
                     return false;

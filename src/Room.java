@@ -66,6 +66,29 @@ public class Room {
     }
 
 
+    public static void printAllRooms()
+    {
+        try (BufferedReader reader = new BufferedReader(new FileReader(Room.fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Room room = new Room();
+                room.setId(Integer.parseInt(line));
+                room.setRoomName(reader.readLine());
+                room.setRoomCapacity(Integer.parseInt(reader.readLine()));
+                room.setRoomPrice(Float.parseFloat(reader.readLine()));
+                System.out.println();
+                System.out.println("Room ID: " + room.getId());
+                System.out.println("Name: " + room.getRoomName());
+                System.out.println("Capacity: " + room.getRoomCapacity());
+                System.out.println("Price: " + room.getRoomPrice());
+                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            }
+        } catch (IOException e) {
+            System.out.println("Could not find or read the rooms file.");
+        }
+    }
+
+
     public void update() {
         // Define the paths for the old and new files
 
@@ -185,5 +208,6 @@ public class Room {
             System.out.println("Error updating files: " + e.getMessage());
         }
     }
+
 
 }

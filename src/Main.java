@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Helper helper = new Helper();
-        ResirvationController resirvation = new ResirvationController(new ResirvationModel());
+        ReservationController resirvation = new ReservationController(new ReservationModel());
         int n;
 
         do {

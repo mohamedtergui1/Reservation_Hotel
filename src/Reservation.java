@@ -3,12 +3,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Resirvation {
+public class Reservation {
     private int id;
     private String startDate;
     private String endDate;
     private Room room;
-    static String fileName = "./resirvation.txt";
+    static String fileName = "./reservation.txt";
     static String tempFile = "./tmp.txt";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -50,9 +50,7 @@ public class Resirvation {
             System.out.print("End date must be after the start date TRY again :");
             return;
         }
-
         this.endDate = endDate;
-
     }
 
     public void setRoom(Room room) {
@@ -89,6 +87,7 @@ public class Resirvation {
             return false;
         }
     }
+
 
 
 
