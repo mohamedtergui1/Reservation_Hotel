@@ -129,15 +129,9 @@ public class ReservationController {
 
             System.out.print("you want to save the changes (y/n) : ");
             if (scanner.nextLine().equalsIgnoreCase("y")) {
-                while (true) {
-                    if (!validateResirvation(reservation, reservation.getId())) {
-                        if (model.update(reservation))
-                            System.out.println("Reservation Updated");
-                        else {
-                            System.out.println("Reservation doesn't Updated");
-                        }
-                        break;
-                    } else {
+                while (!validateResirvation(reservation, reservation.getId())) {
+                    if (!validateResirvation(reservation, reservation.getId()))
+                    {
                         System.out.println("The room not available in this time choose another another room");
                         System.out.print("Enter the new room id: ");
                         while (reservation.getRoom() == null) {
@@ -147,6 +141,12 @@ public class ReservationController {
                         }
                     }
                 }
+                if (model.update(reservation))
+                    System.out.println("Reservation Updated");
+                else {
+                    System.out.println("Reservation doesn't Updated");
+                }
+
             }
             index();
         }

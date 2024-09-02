@@ -1,4 +1,3 @@
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +32,7 @@ public class Reservation {
     }
 
     public void setStartDate(String startDate) {
-        if (startDate == null || !isValidDate(startDate)) {
+        if (startDate == null || isValidDate(startDate)) {
             System.out.print("Start date must be in the format yyyy-MM-dd and cannot be null TRY again :");
             return;
         }
@@ -41,7 +40,7 @@ public class Reservation {
     }
 
     public void setEndDate(String endDate) {
-        if (endDate == null || !isValidDate(endDate)) {
+        if (endDate == null || isValidDate(endDate)) {
             System.out.println("End date must be in the format yyyy-MM-dd and cannot be null");
             return;
         }
@@ -69,11 +68,11 @@ public class Reservation {
 
             DATE_FORMAT.setLenient(false);
             DATE_FORMAT.parse(date);
-            return true;
+            return false;
 
         } catch (ParseException e) {
 
-            return false;
+            return true;
 
         }
     }
@@ -87,9 +86,5 @@ public class Reservation {
             return false;
         }
     }
-
-
-
-
 
 }
