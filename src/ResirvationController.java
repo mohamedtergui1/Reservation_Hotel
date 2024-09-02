@@ -67,13 +67,26 @@ public class ResirvationController {
             room.setId(scanner.nextInt());
             resirvation.setRoom(room.getByRoomId() ? room : null);
         }
-
-        if(model.insert(resirvation))
-            System.out.println("Resirvation added");
-        else
-        {
-            System.err.println("Resirvation doesn't added");
+        while (true) {
+            if (!validateResirvation(resirvation,-1)) {
+                if (model.insert(resirvation))
+                    System.out.println("Reservation added");
+                else {
+                    System.out.println("Reservation doesn't added");
+                }
+                break;
+            } else {
+                System.out.println("The room not available in this time choose another another room");
+                System.out.print("Enter the room id: ");
+                while (resirvation.getRoom() == null) {
+                    room.setId(scanner.nextInt());
+                    resirvation.setRoom(room.getByRoomId() ? room : null);
+                }
+            }
         }
+
+
+
 
         index();
     }
@@ -107,21 +120,32 @@ public class ResirvationController {
             System.out.print("Enter the new room id: ");
             while (resirvation.getRoom() == null) {
                 room.setId(scanner.nextInt());
+                this.scanner.nextLine();
                 resirvation.setRoom(room.getByRoomId() ? room : null);
             }
+
             System.out.print("you want to save the changes (y/n) : ");
             if (scanner.nextLine().equalsIgnoreCase("y")) {
-                if(model.update(resirvation))
-                    System.out.println("Resirvation added");
-                else
-                {
-                    System.err.println("Resirvation doesn't added");
+                while (true) {
+                    if (!validateResirvation(resirvation, resirvation.getId())) {
+                        if (model.update(resirvation))
+                            System.out.println("Reservation Updated");
+                        else {
+                            System.out.println("Reservation doesn't Updated");
+                        }
+                        break;
+                    } else {
+                        System.out.println("The room not available in this time choose another another room");
+                        System.out.print("Enter the new room id: ");
+                        while (resirvation.getRoom() == null) {
+                            room.setId(this.scanner.nextInt());
+                            this.scanner.nextLine();
+                            resirvation.setRoom(room.getByRoomId() ? room : null);
+                        }
+                    }
                 }
             }
-
-
             index();
-
         }
         else {
             System.err.println("Resirvation doesn't exist");
@@ -158,15 +182,6 @@ public class ResirvationController {
         index();
     }
 
-
-
-
-
-
-
-
-
-
     private void printResirvation(Resirvation resirvation)
     {
         System.out.println("resirvation id :" +  resirvation.getId());
@@ -179,11 +194,11 @@ public class ResirvationController {
         System.out.println("=>               room price : " + resirvation.getRoom().getRoomPrice());
     }
 
-    private boolean validateResirvation(Resirvation resirvation)
+    private boolean validateResirvation(Resirvation resirvation, int id)
     {
         ArrayList<Resirvation> resirvations = this.model.getAll();
         for (Resirvation resirv : resirvations) {
-            if (resirv.getRoom().getId() == resirvation.getRoom().getId()) {
+            if (resirv.getRoom().getId() == resirvation.getRoom().getId() && id != resirv.getId()) {
                 if (
                         this.isDateInRange(resirvation.getStartDate(), resirv.getEndDate(), resirv.getEndDate())
                                 ||
@@ -195,7 +210,6 @@ public class ResirvationController {
             }
         }
         return true;
-
     }
 
     private  boolean isDateInRange(String dateString, String startDateString, String endDateString) {
@@ -211,4 +225,5 @@ public class ResirvationController {
             return false;
         }
     }
+
 }

@@ -34,7 +34,7 @@ public class Resirvation {
 
     public void setStartDate(String startDate) {
         if (startDate == null || !isValidDate(startDate)) {
-            System.err.print("Start date must be in the format yyyy-MM-dd and cannot be null TRY again :");
+            System.out.print("Start date must be in the format yyyy-MM-dd and cannot be null TRY again :");
             return;
         }
         this.startDate = startDate;
@@ -42,12 +42,12 @@ public class Resirvation {
 
     public void setEndDate(String endDate) {
         if (endDate == null || !isValidDate(endDate)) {
-            System.err.println("End date must be in the format yyyy-MM-dd and cannot be null");
+            System.out.println("End date must be in the format yyyy-MM-dd and cannot be null");
             return;
         }
 
         if (this.startDate != null && !isDateAfter(this.startDate, endDate)) {
-            System.err.print("End date must be after the start date TRY again :");
+            System.out.print("End date must be after the start date TRY again :");
             return;
         }
 
@@ -58,7 +58,7 @@ public class Resirvation {
     public void setRoom(Room room) {
 
         if (room == null) {
-            System.err.print(" selected room not found  TRY again :");
+            System.out.print(" selected room not found  TRY again :");
             return;
         }
 
