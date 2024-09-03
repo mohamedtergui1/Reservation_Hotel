@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class ReservationModel implements ReservationModelInterface {
     public boolean insert(Reservation reservation) {
-        String data = Integer.toString(reservation.getId()) + System.lineSeparator() +
+        String data = reservation.getId() + System.lineSeparator() +
                 reservation.getStartDate() + System.lineSeparator() +
                 reservation.getEndDate() + System.lineSeparator() +
-                Integer.toString(reservation.getRoom().getId()) + System.lineSeparator();
+                 reservation.getRoom().getId() + System.lineSeparator();
         try {
             Files.write(Paths.get(Reservation.fileName), data.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
             return true;

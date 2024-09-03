@@ -7,6 +7,7 @@ import java.nio.file.StandardOpenOption;
 import java.io.IOException;
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
 
 public class Room {
     private int id;
@@ -146,12 +147,11 @@ public class Room {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                String name = reader.readLine();
+                int capacity = Integer.parseInt(reader.readLine());
+                float price = Float.parseFloat(reader.readLine());
+
                 if (Integer.parseInt(line) == this.id) {
-
-                    String name = reader.readLine();
-                    int capacity = Integer.parseInt(reader.readLine());
-                    float price = Float.parseFloat(reader.readLine());
-
                     this.setRoomName(name);
                     this.setRoomCapacity(capacity);
                     this.setRoomPrice(price);
@@ -208,6 +208,29 @@ public class Room {
             System.out.println("Error updating files: " + e.getMessage());
         }
     }
+    public static ArrayList<Room> getAll() {
+        ArrayList<Room> rooms = new ArrayList<>();
 
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(Room.fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                try {
+                    Room room = new Room();
+                    room.setId(Integer.parseInt(line.trim()));
+                    room.setRoomName(reader.readLine().trim());
+                    room.setRoomCapacity(Integer.parseInt(reader.readLine().trim()));
+                    room.setRoomPrice(Float.parseFloat(reader.readLine().trim()));
+                    rooms.add(room);
+                } catch (NumberFormatException | IOException e) {
+                    System.err.println("Error parsing data for a room: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error processing file: " + e.getMessage());
+        }
+
+        return rooms;
+    }
 
 }

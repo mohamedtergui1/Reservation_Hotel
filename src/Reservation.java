@@ -39,6 +39,11 @@ public class Reservation {
         this.startDate = startDate;
     }
 
+    public void   setRoomNull()
+    {
+        this.room = null;
+    }
+
     public void setEndDate(String endDate) {
         if (endDate == null || isValidDate(endDate)) {
             System.out.println("End date must be in the format yyyy-MM-dd and cannot be null");

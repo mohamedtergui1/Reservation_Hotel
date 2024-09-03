@@ -15,8 +15,8 @@ public class Helper {
         System.out.println("3: Delete Room");
         System.out.println("4: main menu");
         System.out.print("enter your choice: ");
-        int n = scanner.nextInt();
-        scanner.nextLine();
+        int n = this.scanner.nextInt();
+        this.scanner.nextLine();
 
         switch (n) {
             case 1:
@@ -123,7 +123,7 @@ public class Helper {
         System.out.print("Enter room ID: ");
 
         this.room.setId( this.scanner.nextInt() );
-
+        this.scanner.nextLine();
         if (this.room.getByRoomId()) {
             System.out.println("The room selected:");
             printRoom();

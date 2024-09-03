@@ -2,6 +2,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ReservationController {
@@ -18,7 +19,7 @@ public class ReservationController {
         ArrayList<Reservation> reservations = this.model.getAll();
         System.out.println("-----------------------------------------------------------------------------");
         for (Reservation reservation : reservations) {
-            printResirvation(reservation);
+            printReservation(reservation);
             System.out.println("------------------------------------------------------------------------------");
         }
         System.out.println("1: Add Resirvation");
@@ -52,12 +53,12 @@ public class ReservationController {
         Room room = new Room();
         reservation.setId(this.model.lastId() + 1);
 
-        System.out.print("Enter the starting date: (yyyy-MM-dd) ");
+        System.out.print("Enter the starting date: (yyyy-MM-dd): ");
         while (reservation.getStartDate() == null) {
             reservation.setStartDate(scanner.nextLine());
         }
 
-        System.out.print("Enter the ending date: (yyyy-MM-dd) ");
+        System.out.print("Enter the ending date: (yyyy-MM-dd): ");
         while (reservation.getEndDate() == null) {
             reservation.setEndDate(scanner.nextLine());
         }
@@ -69,24 +70,38 @@ public class ReservationController {
 
             reservation.setRoom(room.getByRoomId() ? room : null);
         }
-        while (true) {
-            if (!validateResirvation(reservation,-1)) {
-                if (model.insert(reservation))
-                    System.out.println("Reservation added");
-                else {
-                    System.out.println("Reservation doesn't added");
-                }
-                break;
-            } else {
-                System.out.println("The room not available in this time choose another another room");
-                System.out.print("Enter the room id: ");
+
+        System.out.print("you want to add the reservation (y/n) : ");
+
+        if (scanner.nextLine().equalsIgnoreCase("y")) {
+
+            while (!validateReservation(reservation, -1)) {
+                System.out.println("The room is not available at this time. Choose another room.");
+                System.out.print("Enter another room ID: ");
+                reservation.setRoomNull();
+
+
                 while (reservation.getRoom() == null) {
-                    room.setId(scanner.nextInt());
+                    int roomId = this.scanner.nextInt();
                     this.scanner.nextLine();
+
+                    room.setId(roomId);
                     reservation.setRoom(room.getByRoomId() ? room : null);
+
+                    if (reservation.getRoom() == null) {
+                        System.out.println("Invalid room ID. Please try again.");
+                    }
                 }
             }
+
+
+            if (model.insert(reservation)) {
+                System.out.println("Reservation updated successfully.");
+            } else {
+                System.out.println("Reservation could not be updated.");
+            }
         }
+
 
 
 
@@ -98,56 +113,73 @@ public class ReservationController {
     public void edit()
     {
         System.out.print("Enter the id of the resirvation: ");
-        int id = scanner.nextInt();
+        int id = this.scanner.nextInt();
+        this.scanner.nextLine();
         Reservation res = this.model.get(id);
         if(res != null)
         {
             System.out.println("the selected resirvation: ");
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                printResirvation(res);
+                printReservation(res);
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Room room = new Room();
             Reservation reservation = new Reservation();
             reservation.setId(res.getId());
 
-            System.out.print("Enter the new starting date: (yyyy-MM-dd) ");
+            System.out.print("Enter the new starting date: (yyyy-MM-dd): ");
             while (reservation.getStartDate() == null) {
                 reservation.setStartDate(scanner.nextLine());
             }
 
-            System.out.print("Enter the new ending date: (yyyy-MM-dd) ");
+            System.out.print("Enter the new ending date: (yyyy-MM-dd): ");
             while (reservation.getEndDate() == null) {
                 reservation.setEndDate(scanner.nextLine());
             }
             Room.printAllRooms();
             System.out.print("Enter the new room id: ");
             while (reservation.getRoom() == null) {
-                room.setId(scanner.nextInt());
+                room.setId(this.scanner.nextInt());
                 this.scanner.nextLine();
                 reservation.setRoom(room.getByRoomId() ? room : null);
             }
 
-            System.out.print("you want to save the changes (y/n) : ");
+
+            System.out.print("Do you want to update the reservation (y/n): ");
             if (scanner.nextLine().equalsIgnoreCase("y")) {
-                while (!validateResirvation(reservation, reservation.getId())) {
-                    if (!validateResirvation(reservation, reservation.getId()))
-                    {
-                        System.out.println("The room not available in this time choose another another room");
-                        System.out.print("Enter the new room id: ");
-                        while (reservation.getRoom() == null) {
-                            room.setId(this.scanner.nextInt());
+
+
+                while (!validateReservation(reservation, reservation.getId())) {
+                    System.out.println("The room is not available at this time. Choose another room.");
+                    System.out.print("Enter the new room ID: ");
+                    reservation.setRoomNull();
+
+
+                    while (reservation.getRoom() == null) {
+                        try {
+                            int roomId = this.scanner.nextInt();
                             this.scanner.nextLine();
+
+                            room.setId(roomId);
                             reservation.setRoom(room.getByRoomId() ? room : null);
+
+                            if (reservation.getRoom() == null) {
+                                System.out.println("Invalid room ID. Please try again.");
+                            }
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input. Please enter a numeric room ID.");
+                            this.scanner.nextLine(); // Clear the invalid input
                         }
                     }
                 }
-                if (model.update(reservation))
-                    System.out.println("Reservation Updated");
-                else {
-                    System.out.println("Reservation doesn't Updated");
-                }
 
+                // Attempt to update the reservation and provide feedback
+                if (model.update(reservation)) {
+                    System.out.println("Reservation updated successfully.");
+                } else {
+                    System.out.println("Reservation could not be updated.");
+                }
             }
+
             index();
         }
         else {
@@ -185,7 +217,7 @@ public class ReservationController {
         index();
     }
 
-    private void printResirvation(Reservation reservation)
+    private void printReservation(Reservation reservation)
     {
         System.out.println("resirvation id :" +  reservation.getId());
         System.out.println("resirvation startdate : " + reservation.getStartDate() );
@@ -197,36 +229,37 @@ public class ReservationController {
         System.out.println("=>               room price : " + reservation.getRoom().getRoomPrice());
     }
 
-    private boolean validateResirvation(Reservation reservation, int id)
-    {
+
+
+    private boolean validateReservation(Reservation reservation, int id) {
         ArrayList<Reservation> reservations = this.model.getAll();
-        for (Reservation resirv : reservations) {
-            if (resirv.getRoom().getId() == reservation.getRoom().getId() && id != resirv.getId()) {
-                if (
-                        this.isDateInRange(reservation.getStartDate(), resirv.getEndDate(), resirv.getEndDate())
-                                ||
-                                this.isDateInRange(reservation.getEndDate(), resirv.getEndDate(), resirv.getEndDate())
-                )
-                {
+        for (Reservation reserv : reservations) {
+            if (reserv.getRoom().getId() == reservation.getRoom().getId() && id != reserv.getId()) {
+                if (isDateRangeOverlap(
+                        reservation.getStartDate(), reservation.getEndDate(),
+                        reserv.getStartDate(), reserv.getEndDate()
+                )) {
                     return false;
                 }
             }
         }
         return true;
     }
-
-    private  boolean isDateInRange(String dateString, String startDateString, String endDateString) {
+    private boolean isDateRangeOverlap(String start1, String end1, String start2, String end2) {
         try {
+            Date startDate1 = DATE_FORMAT.parse(start1);
+            Date endDate1 = DATE_FORMAT.parse(end1);
+            Date startDate2 = DATE_FORMAT.parse(start2);
+            Date endDate2 = DATE_FORMAT.parse(end2);
 
-            Date date = DATE_FORMAT.parse(dateString);
-            Date startDate = DATE_FORMAT.parse(startDateString);
-            Date endDate = DATE_FORMAT.parse(endDateString);
 
-            return !date.before(startDate) && !date.after(endDate);
+            return !(endDate1.before(startDate2) || startDate1.after(endDate2));
         } catch (ParseException e) {
             System.err.println("Date parsing error: " + e.getMessage());
             return false;
         }
     }
+
+
 
 }
